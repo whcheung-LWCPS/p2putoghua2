@@ -463,10 +463,6 @@
                 const photo = SUNNY_IMAGES[Math.floor(Math.random() * SUNNY_IMAGES.length)];
                 container.innerHTML = `
                     <div class="relative w-full h-36 md:h-40 overflow-hidden rounded-xl shadow-md border-2 border-amber-300 group flex items-center justify-center">
-                        <div class="absolute top-1.5 left-1.5 z-10 bg-amber-500/90 text-white font-bold text-[10px] px-2 py-0.5 rounded-full shadow flex items-center gap-1 backdrop-blur-sm">
-                            <i class="fa-solid fa-sun text-yellow-200"></i>
-                            <span>☀️ 陽光燦爛照片</span>
-                        </div>
                         <img src="${photo.url}" 
                              alt="${photo.alt}" 
                              onerror="this.onerror=null; this.src='https://placehold.co/600x400/f59e0b/ffffff?text=%E9%99%BD%E5%85%89%E7%8C%9B%E7%83%88';" 
@@ -477,10 +473,6 @@
                 const photo = RAINY_IMAGES[Math.floor(Math.random() * RAINY_IMAGES.length)];
                 container.innerHTML = `
                     <div class="relative w-full h-36 md:h-40 overflow-hidden rounded-xl shadow-md border-2 border-blue-400 group flex items-center justify-center">
-                        <div class="absolute top-1.5 left-1.5 z-10 bg-blue-600/90 text-white font-bold text-[10px] px-2 py-0.5 rounded-full shadow flex items-center gap-1 backdrop-blur-sm">
-                            <i class="fa-solid fa-cloud-showers-heavy text-sky-200"></i>
-                            <span>🌧️ 下雨天氣照片</span>
-                        </div>
                         <img src="${photo.url}" 
                              alt="${photo.alt}" 
                              onerror="this.onerror=null; this.src='https://placehold.co/600x400/2563eb/ffffff?text=%E4%B8%8B%E5%A4%A7%E9%9B%A8';" 
@@ -511,18 +503,20 @@
                          draggable="true" 
                          ondragstart="handleDragStart(event, '${item.id}')"
                          onclick="handleCardClick('${item.id}')"
-                         class="word-card ${borderClass} rounded-xl p-1.5 shadow-sm hover:shadow transition-all cursor-grab active:cursor-grabbing flex flex-col justify-between select-none relative group">
+                         class="word-card ${borderClass} rounded-xl p-1.5 pt-2 shadow-sm hover:shadow transition-all cursor-grab active:cursor-grabbing flex flex-col items-center justify-center select-none relative group">
                         
-                        <div class="flex items-center justify-between gap-1">
-                            <span class="font-pinyin text-[10px] md:text-[11px] font-semibold text-slate-500 tracking-wide">${item.pinyin}</span>
-                            <button onclick="event.stopPropagation(); speakText('${item.text}')" 
-                                    class="w-4 h-4 rounded-full bg-white/80 hover:bg-white text-sky-600 flex items-center justify-center text-[9px] shadow-sm transition shrink-0" 
-                                    title="聽語音">
-                                <i class="fa-solid fa-volume-high"></i>
-                            </button>
-                        </div>
+                        <!-- 語音按鈕定位於右上角，不影響拼音居中 -->
+                        <button onclick="event.stopPropagation(); speakText('${item.text}')" 
+                                class="absolute top-1 right-1 w-4 h-4 md:w-5 md:h-5 rounded-full bg-white/80 hover:bg-white text-sky-600 flex items-center justify-center text-[9px] md:text-[10px] shadow-sm transition shrink-0 z-10" 
+                                title="聽語音">
+                            <i class="fa-solid fa-volume-high"></i>
+                        </button>
 
-                        <div class="flex items-center justify-center gap-1 py-0.5">
+                        <!-- 文字正上方的居中拼音 -->
+                        <span class="font-pinyin text-[10px] md:text-[11px] font-semibold text-slate-500 tracking-wide text-center leading-tight mb-0.5">${item.pinyin}</span>
+
+                        <!-- 圖標與中文詞語 -->
+                        <div class="flex items-center justify-center gap-1">
                             <i class="fa-solid ${item.icon} text-xs opacity-80"></i>
                             <span class="text-xs md:text-sm font-black">${item.text}</span>
                         </div>
@@ -711,33 +705,6 @@
                 btn.className = "w-full py-2 px-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold text-xs md:text-sm rounded-xl flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 cursor-pointer animate-pulse shrink-0";
             } else {
                 btn.disabled = true;
-                btn.className = "w-full py-2 px-3 bg-slate-200 text-slate-400 font-extrabold text-xs md:text-sm rounded-xl flex items-center justify-center gap-2 shadow transition-all duration-300 shrink-0 disabled:cursor-not-allowed";
-            }
-        }
-
-        function speakFullSentence() {
-            if (currentAnswers.weather && currentAnswers.item) {
-                const sentence = getFullSentenceText();
-                speakText(sentence);
-            }
-        }
-
-        function closeModal() {
-            document.getElementById('win-modal').classList.add('hidden');
-        }
-
-        function resetGame() {
-            initGame();
-        }
-
-        window.onload = function() {
-            initGame();
-
-            if (window.speechSynthesis) {
-                window.speechSynthesis.getVoices();
-                if (window.speechSynthesis.onvoiceschanged !== undefined) {
-                    window.speechSynthesis.onvoiceschanged = () => { speakTextWebSpeechFallback(''); };
-                }
             }
         };
     </script>
